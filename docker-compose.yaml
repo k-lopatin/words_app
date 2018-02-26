@@ -1,0 +1,23 @@
+version: '3'
+services:
+    postgres:
+        image: postgres
+        ports:
+            - '5437:5432'
+    php:
+        build: containers/php-fpm
+        ports:
+            - '9007:9000'
+        volumes:
+            - ./words_app_backend:/var/www/words_app_backend:consistent
+            - ./logs/symfony:/var/www/words_app/var/logs:consistent
+        links:
+            - postgres
+    nginx:
+        build: containers/nginx
+        ports:
+            - '8087:80'
+        links:
+            - php
+        volumes:
+            - ./logs/nginx/:/var/log/nginx:consistent
